@@ -1,1 +1,121 @@
-# progkasir
+package main
+import (
+	"fmt"
+)
+const NMAX int = 1000
+
+type barang struct {
+	ID, Nama string
+	Stock, Harga int
+}
+type tabBarang [NMAX]barang
+
+type pesanan struct {
+	Item, Quantity, Subtotal int
+}
+type tabPesanan [NMAX]pesanan
+
+func menu() {
+	fmt.Println("---------------------")
+	fmt.Println("1. Tampilkan Barang")
+	fmt.Println("2. Update Barang")
+	fmt.Println("3. Transaksi")
+	fmt.Println("4. Cetak Struk")
+	fmt.Println("5. Exit")
+	fmt.Println("---------------------")
+}
+
+func cetakTransaksi(A tabBarang, B tabPesanan, n int) {
+	fmt.Println("---------------------")
+	fmt.Println("       T J MART      ")
+	fmt.Println("---------------------")
+	fmt.Println("Tansaksi:")
+	fmt.Println("ID: ")
+	fmt.Println("Tanggal: ")
+	fmt.Println("Kasir: ")
+	fmt.Println("Tipe Pesanan: ")
+	fmt.Println("Pelanggan: ")
+	fmt.Println("---------------------")
+	for i := 0; i < n; i++ {
+		fmt.Println("Subtotal: ")
+		fmt.Printf("Item = %d - Qty = %d\n", n, B[i].Quantity)
+		fmt.Printf("TOTAL: %d\n", B[i].Subtotal)
+		fmt.Println("Pembayaran: Cash")
+		fmt.Println("--------------------")
+	}
+
+}
+
+func inventory(A *tabBarang) {
+	fmt.Println("---------------------")
+	i := 0
+	for {
+		fmt.Printf("ID         : %s\n", A[i].ID)
+		fmt.Printf("Nama Barang: %s\n", A[i].Nama)
+		fmt.Printf("Harga      : %d\n", A[i].Harga)
+		fmt.Printf("Stock      : %d\n", A[i].Stock)
+		fmt.Println("---------------------")
+	}
+}
+
+func main() {
+	var pilih, jumlahBarang int
+	var perintah string
+	var produk tabBarang
+	var kasir tabPesanan
+
+	for {
+		menu()
+		fmt.Print("Pilih [1/2/3/4]: ")
+		fmt.Scan(&pilih)
+		switch pilih {
+		case 1:
+			inventory(&produk)
+		case 2:
+			fmt.Scan(&perintah)
+			switch perintah {
+			case "tambahMenu":
+				tambahMenu(&produk)
+			case "tambahStock":
+				updateBarang(&produk)
+			}
+		case 3:
+			fmt.Scan(&jumlahBarang)
+			operasiTransaksi(&produk, &kasir, jumlahBarang)
+		case 4:
+			cetakTransaksi(produk, kasir, jumlahBarang)
+		case 5:
+			break
+		}
+	}
+}
+
+func tambahMenu(A *tabBarang) {
+	fmt.Scan(&A.ID, &A.Nama, &A.Stock, &A.Harga)
+}
+
+func updateBarang(A *tabBarang) {
+	var tambah int
+	var id string
+	i := 0
+	fmt.Scan(&id)
+	for id != "0" {
+		if A[i].ID == id {
+			fmt.Scan(&tambah)
+			A[i].Stock += tambah
+		}
+		i++
+	}
+}
+
+func operasiTransaksi(A *tabBarang, B *tabPesanan, n int) {
+	var id string
+	for i := 0; i < n; i++ {
+		fmt.Scan(&id)
+		if A[i].ID == id {
+			fmt.Scan(&B[i].Quantity)
+			B[i].Subtotal = B[i].Quantity * A[i].Harga
+			A[i].Stock -= B[i].Quantity
+		}
+	}
+}
